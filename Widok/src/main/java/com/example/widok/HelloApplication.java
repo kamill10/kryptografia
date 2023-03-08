@@ -1,4 +1,4 @@
-package com.example.krypto;
+package com.example.widok;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;

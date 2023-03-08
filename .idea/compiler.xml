@@ -6,8 +6,17 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="kryptografia" />
+        <module name="Modul" />
+        <module name="Widok" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="Krypto" target="19" />
+      <module name="Model" target="19" />
+      <module name="Model (1)" target="19" />
+      <module name="ModelProject" target="19" />
+      <module name="View" target="19" />
+      <module name="View2" target="19" />
+    </bytecodeTargetLevel>
   </component>
 </project>
