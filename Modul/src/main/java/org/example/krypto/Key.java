@@ -1,3 +1,5 @@
+package org.example.krypto;
+
 import java.security.SecureRandom;
 public class Key {
     private byte[] keyGenerator() {
