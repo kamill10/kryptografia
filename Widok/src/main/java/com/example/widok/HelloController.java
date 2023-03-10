@@ -19,7 +19,7 @@ public class HelloController {
         return key;
     }
     public void setKey() {
-        String convert = String.valueOf(new BigInteger(keyGenerator()));
+        String convert = String.valueOf(new BigInteger(keyGenerator()).abs());
         key.setText(convert);
     }
 }
