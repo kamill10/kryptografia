@@ -77,12 +77,12 @@
                <Font name="Txt" size="14.0" />
             </font>
          </Button>
-         <Label layoutX="15.0" layoutY="256.0" prefHeight="35.0" prefWidth="186.0" text="TEKST JAWNY:">
+         <Label fx:id="tekst_jawny" layoutX="15.0" layoutY="256.0" prefHeight="35.0" prefWidth="186.0" text="TEKST JAWNY:">
             <font>
                <Font name="Txt" size="14.0" />
             </font>
          </Label>
-         <Label layoutX="529.0" layoutY="256.0" prefHeight="35.0" prefWidth="186.0" text="SZYFROGRAM:">
+         <Label fx:id="tekst_zaszyfrowany" layoutX="529.0" layoutY="256.0" prefHeight="35.0" prefWidth="186.0" text="SZYFROGRAM:">
             <font>
                <Font name="Txt" size="14.0" />
             </font>
