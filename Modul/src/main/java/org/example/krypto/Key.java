@@ -1,11 +1,14 @@
 package org.example.krypto;
 
 import java.security.SecureRandom;
+
+
+
 public class Key {
 
-    private byte [][] main_key;
+    private byte[][] main_key;
 
-    private  int[] sbox = { 0x63, 0x7C, 0x77, 0x7B, 0xF2, 0x6B, 0x6F,
+    private int[] sbox = {0x63, 0x7C, 0x77, 0x7B, 0xF2, 0x6B, 0x6F,
             0xC5, 0x30, 0x01, 0x67, 0x2B, 0xFE, 0xD7, 0xAB, 0x76, 0xCA, 0x82,
             0xC9, 0x7D, 0xFA, 0x59, 0x47, 0xF0, 0xAD, 0xD4, 0xA2, 0xAF, 0x9C,
             0xA4, 0x72, 0xC0, 0xB7, 0xFD, 0x93, 0x26, 0x36, 0x3F, 0xF7, 0xCC,
@@ -28,9 +31,9 @@ public class Key {
             0x61, 0x35, 0x57, 0xB9, 0x86, 0xC1, 0x1D, 0x9E, 0xE1, 0xF8, 0x98,
             0x11, 0x69, 0xD9, 0x8E, 0x94, 0x9B, 0x1E, 0x87, 0xE9, 0xCE, 0x55,
             0x28, 0xDF, 0x8C, 0xA1, 0x89, 0x0D, 0xBF, 0xE6, 0x42, 0x68, 0x41,
-            0x99, 0x2D, 0x0F, 0xB0, 0x54, 0xBB, 0x16 };
+            0x99, 0x2D, 0x0F, 0xB0, 0x54, 0xBB, 0x16};
 
-    private int[] inv_sbox = { 0x52, 0x09, 0x6A, 0xD5, 0x30, 0x36, 0xA5,
+    private int[] inv_sbox = {0x52, 0x09, 0x6A, 0xD5, 0x30, 0x36, 0xA5,
             0x38, 0xBF, 0x40, 0xA3, 0x9E, 0x81, 0xF3, 0xD7, 0xFB, 0x7C, 0xE3,
             0x39, 0x82, 0x9B, 0x2F, 0xFF, 0x87, 0x34, 0x8E, 0x43, 0x44, 0xC4,
             0xDE, 0xE9, 0xCB, 0x54, 0x7B, 0x94, 0x32, 0xA6, 0xC2, 0x23, 0x3D,
@@ -53,22 +56,24 @@ public class Key {
             0x2D, 0xE5, 0x7A, 0x9F, 0x93, 0xC9, 0x9C, 0xEF, 0xA0, 0xE0, 0x3B,
             0x4D, 0xAE, 0x2A, 0xF5, 0xB0, 0xC8, 0xEB, 0xBB, 0x3C, 0x83, 0x53,
             0x99, 0x61, 0x17, 0x2B, 0x04, 0x7E, 0xBA, 0x77, 0xD6, 0x26, 0xE1,
-            0x69, 0x14, 0x63, 0x55, 0x21, 0x0C, 0x7D };
-    public  byte[] keyGenerator() {
+            0x69, 0x14, 0x63, 0x55, 0x21, 0x0C, 0x7D};
+
+    public byte[] keyGenerator() {
         SecureRandom secureRandom = new SecureRandom();
         byte[] key = new byte[16];
         secureRandom.nextBytes(key);
         return key;
     }
+
     public static byte[] generateSubKey(byte[] masterKey, int round) {
         byte[] subKey = new byte[16];
         byte[] rcon = Rcon(round);
 
         for (int i = 0; i < 16; i++) {
             if (i < 4) {
-                subKey[i] = (byte)(masterKey[i] ^ rcon[i]);
+                subKey[i] = (byte) (masterKey[i] ^ rcon[i]);
             } else {
-                subKey[i] = (byte)(subKey[i - 4] ^ masterKey[i]);
+                subKey[i] = (byte) (subKey[i - 4] ^ masterKey[i]);
             }
         }
         return subKey;
@@ -76,10 +81,70 @@ public class Key {
 
     private static byte[] Rcon(int round) {
         byte[] rcon = new byte[4];
-        rcon[0] = (byte)(1 << round);
+        rcon[0] = (byte) (1 << round);
         return rcon;
     }
-    private void mixColumn() {
 
+    private byte[][] subBytes(byte[][] bytes) {
+        byte[][] subBytes = new byte[4][4];
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 4; j++) {
+                subBytes[i][j] = (byte) (sbox[bytes[i][j] & 0xFF] & 0xFF);
+            }
+        }
+        return subBytes;
+    }
+
+    private byte[][] shiftRows(byte[][] bytes) {
+        byte[] temp = new byte[4];
+        for (int i = 1; i < 4; i++) {
+            for (int j = 0; j < 4; j++) {
+                temp[j] = bytes[i][(i + j) % 4];
+                bytes[i][j] = temp[j];
+            }
+        }
+        return bytes;
+    }
+
+    private byte[][] mixColumns(byte[][] s)  {
+        byte temp0, temp1, temp2, temp3;
+
+        for (int c = 0; c < 4; c++) {
+            temp0 = (byte) (multiply(2, s[0][c]) ^ multiply(3, s[1][c]) ^ s[2][c] ^ s[3][c]);
+            temp1 = (byte) (s[0][c] ^ multiply(2, s[1][c]) ^ multiply(3, s[2][c]) ^ s[3][c]);
+            temp2 = (byte) (s[0][c] ^ s[1][c] ^ multiply(2, s[2][c]) ^ multiply(3, s[3][c]));
+            temp3 = (byte) (multiply(3, s[0][c]) ^ s[1][c] ^ s[2][c] ^ multiply(2, s[3][c]));
+            s[0][c] = temp0;
+            s[1][c] = temp1;
+            s[2][c] = temp2;
+            s[3][c] = temp3;
+        }
+        return s;
+    }
+
+    public static byte multiply(int a, byte b){
+        byte result = 0;
+        int temp;
+
+        for(int i = 0; i < 8; i++){
+            if((b & 1) != 0){
+                temp = a * (b & 1);
+                result ^= (byte)temp;
+            }
+
+            b = (byte)(b >> 1);
+            a = (a == 0x80) ? 0x1b : (byte)(a << 1);
+        }
+
+        return result;
+    }
+    public byte[][] addRoundKey(byte[][] state, byte[][] roundKey){
+        byte[][] result = new byte[4][4];
+        for (int c = 0; c < 4; c++){
+            for (int r = 0; r < 4; r++){
+                result[r][c] = (byte)(state[r][c] ^ roundKey[r][c]);
+            }
+        }
+        return result;
     }
 }
