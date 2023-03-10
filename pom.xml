@@ -17,6 +17,13 @@
         <maven.compiler.target>19</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
+    <dependencies>
+        <dependency>
+            <groupId>org.scala-js</groupId>
+            <artifactId>scalajs-java-securerandom_sjs1_2.11</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+    </dependencies>
     <build>
         <plugins>
             <plugin>
