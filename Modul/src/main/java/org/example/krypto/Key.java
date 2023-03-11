@@ -86,13 +86,25 @@ public class Key {
     }
 
     private byte[][] subBytes(byte[][] bytes) {
-        byte[][] subBytes = new byte[4][4];
+        byte[][] result = new byte[4][4];
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 4; j++) {
-                subBytes[i][j] = (byte) (sbox[bytes[i][j] & 0xFF] & 0xFF);
+                int element = bytes[i][j] & 0xff;
+                result[i][j] = (byte) sbox[element];
             }
         }
-        return subBytes;
+        return result;
+    }
+
+    private byte[][] inverseSubBytes(byte [][]bytes ) {
+        byte[][] result = new byte[4][4];
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 4; j++) {
+                int element = bytes[i][j] & 0xff;
+                result[i][j] = (byte) inv_sbox[element];
+            }
+        }
+        return result;
     }
 
     private byte[][] shiftRows(byte[][] bytes) {
@@ -105,6 +117,18 @@ public class Key {
         }
         return bytes;
     }
+
+    private byte[][] invShiftRows(byte[][] bytes) {
+        byte[] temp = new byte[4];
+        for (int i = 1; i < 4; i++) {
+            for (int j = 0; j < 4; j++) {
+                temp[j] = bytes[i][(i - j) % 4];
+                bytes[i][j] = temp[j];
+            }
+        }
+        return bytes;
+    }
+
 
     private byte[][] mixColumns(byte[][] s)  {
         byte temp0, temp1, temp2, temp3;
@@ -120,6 +144,17 @@ public class Key {
             s[3][c] = temp3;
         }
         return s;
+    }
+
+    private byte[][] invMixColumns(byte[][] s)  {
+        byte[][] result = new byte[4][4];
+        for (int col = 0; col < 4; col++) {
+            result[0][col] = (byte) (multiply(14, s[0][col]) ^ multiply(11, s[1][col]) ^ multiply(13, s[2][col]) ^ multiply(9, s[3][col]));
+            result[1][col] = (byte) (multiply(9, s[0][col]) ^ multiply(14, s[1][col]) ^ multiply(11, s[2][col]) ^ multiply(13, s[3][col]));
+            result[2][col] = (byte) (multiply(13, s[0][col]) ^ multiply(9, s[1][col]) ^ multiply(14, s[2][col]) ^ multiply(11, s[3][col]));
+            result[3][col] = (byte) (multiply(11, s[0][col]) ^ multiply(13, s[1][col]) ^ multiply(9, s[2][col]) ^ multiply(14, s[3][col]));
+        }
+        return result;
     }
 
     public static byte multiply(int a, byte b){
