@@ -10,10 +10,9 @@ import java.io.IOException;
 public class HelloApplication extends Application {
     @Override
     public void start(Stage stage) throws IOException {
-        String napis = "dupoa";
-        System.out.println(napis.getBytes());
-        byte [] array = napis.getBytes();
-        System.out.println(array);
+        byte [ ]arr = "Dsghjkl;kjht65789polkjbhftryguihjladasd".getBytes();
+        System.out.println(arr.length);
+        System.out.println(arr);
 
         FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("hello-view.fxml"));
         Scene scene = new Scene(fxmlLoader.load());
