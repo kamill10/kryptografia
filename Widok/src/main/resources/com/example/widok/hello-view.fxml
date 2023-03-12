@@ -87,8 +87,8 @@
                <Font name="Txt" size="14.0" />
             </font>
          </Label>
-         <TextArea accessibleRole="TEXT_FIELD" layoutX="14.0" layoutY="292.0" prefHeight="276.0" prefWidth="320.0" />
-         <TextArea accessibleRole="TEXT_FIELD" layoutX="529.0" layoutY="292.0" prefHeight="276.0" prefWidth="320.0" />
+         <TextArea fx:id="plainText" accessibleRole="TEXT_FIELD" layoutX="14.0" layoutY="292.0" prefHeight="276.0" prefWidth="320.0" />
+         <TextArea fx:id="encryptedText" accessibleRole="TEXT_FIELD" layoutX="529.0" layoutY="292.0" prefHeight="276.0" prefWidth="320.0" />
          <Button layoutX="345.0" layoutY="346.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="170.0" text="Szyfruj &gt;&gt;&gt;">
             <font>
                <Font name="Txt" size="14.0" />
