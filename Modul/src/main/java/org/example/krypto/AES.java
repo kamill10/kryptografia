@@ -1,5 +1,7 @@
 package org.example.krypto;
 
+import java.util.Arrays;
+
 public class AES {
     private byte[][] mainKey;
     Key key = new Key();
@@ -160,7 +162,7 @@ public class AES {
 
     private byte[][] generateKey(byte[] key)
     {
-        byte[][] temp = new byte[4 * (10+1)][4];
+        byte[][] temp = new byte[44][4];
         int i = 0;
         int j =0;
         while (i < 4)
@@ -252,12 +254,8 @@ public class AES {
             tmp[i] = state[i / 4][i%4];
         return tmp;
     }
-    public byte [] divideOnBlocksAndDecode(byte[]encrypted_text) {
+    public byte []decode(byte[]encrypted_text) {
         byte[]blocks = new byte[16];
-        //Create array with bites of message,but size=len is multiple 16
-
-        //Add 0 to array if you need
-        //Send block to encrypt function
         byte []encrypted = new byte [encrypted_text.length];
         for(int i =0; i < encrypted_text.length ; i++) {
             for(int j =0; j < 16; j++) {
@@ -268,10 +266,10 @@ public class AES {
             decrypt(blocks);
             System.arraycopy(blocks, 0, encrypted, i-15, 16);
         }
-
+        System.out.println(Arrays.toString(encrypted));
         int var = 0;
-        for (int i = 1; i < encrypted_text.length; i ++) {
-            if (encrypted_text[i] == 0) {
+        for (int i = 15; i>0;i--) {
+            if (encrypted[i] == 0) {
                 var += 1;
             } else {
                 break;
@@ -279,7 +277,8 @@ public class AES {
         }
         byte[] result = new byte[encrypted_text.length - var];
         System.arraycopy(encrypted_text, 0, result, 0, encrypted_text.length - var);
-        return encrypted;
+        System.out.println(Arrays.toString(result));
+        return result;
     }
 
 }
