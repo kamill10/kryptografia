@@ -14,7 +14,7 @@ public class Key {
         return key;
     }
 
-    public  byte[] generateSubKey(byte[] masterKey, int round) {
+    public byte[] generateSubKey(byte[] masterKey, int round) {
         byte[] subKey = new byte[16];
         byte[] rcon = Rcon(round);
 
@@ -33,7 +33,5 @@ public class Key {
         rcon[0] = (byte) (1 << round);
         return rcon;
     }
-
-
-
 }
+

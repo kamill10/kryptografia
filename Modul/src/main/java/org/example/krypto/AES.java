@@ -1,8 +1,9 @@
 package org.example.krypto;
 
 public class AES {
-    private byte [] mainKey;
+    private byte[][] mainKey;
     Key key = new Key();
+    byte[]originalKey;
     private int[] sbox = {0x63, 0x7C, 0x77, 0x7B, 0xF2, 0x6B, 0x6F,
             0xC5, 0x30, 0x01, 0x67, 0x2B, 0xFE, 0xD7, 0xAB, 0x76, 0xCA, 0x82,
             0xC9, 0x7D, 0xFA, 0x59, 0x47, 0xF0, 0xAD, 0xD4, 0xA2, 0xAF, 0x9C,
@@ -52,6 +53,10 @@ public class AES {
             0x4D, 0xAE, 0x2A, 0xF5, 0xB0, 0xC8, 0xEB, 0xBB, 0x3C, 0x83, 0x53,
             0x99, 0x61, 0x17, 0x2B, 0x04, 0x7E, 0xBA, 0x77, 0xD6, 0x26, 0xE1,
             0x69, 0x14, 0x63, 0x55, 0x21, 0x0C, 0x7D};
+
+    public AES(byte[] originalKey) {
+        this.originalKey = originalKey;
+    }
 
     private byte[][] subBytes(byte[][] bytes) {
         byte[][] result = new byte[4][4];
@@ -141,30 +146,140 @@ public class AES {
 
         return result;
     }
-    public byte[][] addRoundKey(byte[][] state, byte[][] roundKey){
-        byte[][] result = new byte[4][4];
-        for (int c = 0; c < 4; c++){
-            for (int r = 0; r < 4; r++){
-                result[r][c] = (byte)(state[r][c] ^ roundKey[r][c]);
+        private byte[][] addRoundKey(byte[][] state, byte[][] w, int round)
+        {
+            byte[][] tmp = new byte[4][4];
+            for (int c = 0; c < 4; c++)
+            {
+                for (int l = 0; l < 4; l++)
+                    tmp[l][c] = (byte) (state[l][c] ^ w[round * 4 + c][l]);
             }
+            return tmp;
         }
-        return result;
+
+
+    private byte[][] generateKey(byte[] key)
+    {
+        byte[][] temp = new byte[4 ][4];
+        int i = 0;
+        int j =0;
+        while (i < 4)
+        {
+            temp[i][0] = key[j];
+            temp[i][1] = key[j++];
+            temp[i][2] = key[j++];
+            temp[i][3] = key[j++];
+            i++;
+            j++;
+        }
+        return temp;
     }
 
-    public void encrypt(byte[] arr_bytes) {
+    private  byte  []encrypt(byte[] arr_bytes) {
         byte[] tmp = new byte[arr_bytes.length];
         byte[][] state = new byte[4][4];
-        for (int i = 0; i < arr_bytes.length; i++) {
+        for (int i = 0; i < arr_bytes.length; i++)
+            //save arr-bytes to two diamension state arr
             state[i / 4][i % 4] = arr_bytes[i];
-        }
-        state = addRoundKey(state,mainKey);
-        for (int i = 1; i < 10; i++) {
-            byte []roundKey = key.generateSubKey(mainKey,i);
-            state = addRoundKey(state, roundKey );
+        mainKey = generateKey(originalKey);
+        state=addRoundKey(state,mainKey,0);
+        for (int round = 0; round < 10; round++) {
             state = subBytes(state);
             state = shiftRows(state);
             state = mixColumns(state);
+            state = addRoundKey(state, mainKey,round);
         }
-        state = addRoundKey(state, roundKey);
+        state = subBytes(state);
+        state = shiftRows(state);
+        state = addRoundKey(state, mainKey,10);
+        for (int i = 0; i < tmp.length; i++)
+            tmp[i] = state[i / 4][i%4];
+        return tmp;
     }
+
+    public byte[] divideBytesOn128bits(byte[]message) {
+        byte[]blocks = new byte[16];
+        //Create array with bites of message,but size=len is multiple 16
+        int len;
+        if(message.length/16 == 0) {
+            len = 16;
+        }
+        else if (message.length%16 != 0) {
+            len = ((message.length/16)+1)*16;
+        }
+        else {
+            len = message.length;
+        }
+        byte [] multipleSizeOfBlockArray = new byte[len];
+        //Add 0 to array if you need
+        System.arraycopy(message, 0, multipleSizeOfBlockArray, 0, message.length);
+        for(int j = message.length; j < len; j++) {
+            multipleSizeOfBlockArray[j] = 0;
+        }
+        //Send block to encrypt function
+        byte []encrypted = new byte [len];
+        for(int i =0; i < multipleSizeOfBlockArray.length ; i++) {
+            for(int j =0; j < 16; j++) {
+                blocks[j] = multipleSizeOfBlockArray[i];
+                i++;
+            }
+            i--;
+                encrypt(blocks);
+            System.arraycopy(blocks, 0, encrypted, i-15, 16);
+        }
+        return encrypted;
+    }
+
+    private byte  []decrypt(byte[] arr_bytes) {
+
+        byte[] tmp = new byte[arr_bytes.length];
+        byte[][] state = new byte[4][4];
+        for (int i = 0; i < arr_bytes.length; i++)
+            //save arr-bytes to two diamension state arr
+            state[i / 4][i % 4] = arr_bytes[i];
+        mainKey = generateKey(originalKey);
+        state=addRoundKey(state,mainKey,0);
+        for (int round = 9; round >=1; round--) {
+            state = inverseSubBytes(state);
+            state = invShiftRows(state);
+            state = addRoundKey(state, mainKey,round);
+            state = invMixColumns(state);
+        }
+        state = inverseSubBytes(state);
+        state = invShiftRows(state);
+        state = addRoundKey(state, mainKey,10);
+        for (int i = 0; i < tmp.length; i++)
+            tmp[i] = state[i / 4][i%4];
+        return tmp;
+    }
+ public byte [] divideOnBlocksAndDecode(byte[]encrypted_text) {
+     byte[]blocks = new byte[16];
+     //Create array with bites of message,but size=len is multiple 16
+
+     //Add 0 to array if you need
+     //Send block to encrypt function
+     byte []encrypted = new byte [encrypted_text.length];
+     for(int i =0; i < encrypted_text.length ; i++) {
+         for(int j =0; j < 16; j++) {
+             blocks[j] = encrypted_text[i];
+             i++;
+         }
+         i--;
+         decrypt(blocks);
+         System.arraycopy(blocks, 0, encrypted, i-15, 16);
+     }
+
+     int cnt = 0;
+     for (int i = 1; i < encrypted_text.length; i ++) {
+         if (encrypted_text[i] == 0) {
+             cnt += 1;
+         } else {
+             break;
+         }
+     }
+     byte[] result = new byte[encrypted_text.length - cnt];
+     System.arraycopy(encrypted_text, 0, result, 0, encrypted_text.length - cnt);
+     return encrypted;
+ }
+
 }

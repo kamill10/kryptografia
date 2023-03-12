@@ -4,15 +4,20 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import org.example.krypto.AES;
+import org.example.krypto.Key;
 
 import java.io.IOException;
+import java.security.SecureRandom;
+import java.util.Arrays;
 
 public class HelloApplication extends Application {
     @Override
     public void start(Stage stage) throws IOException {
-        byte [ ]arr = "Dsghjkl;kjht65789polkjbhftryguihjladasd".getBytes();
-        System.out.println(arr.length);
-        System.out.println(arr);
+        Key key = new Key();
+      AES aes = new AES(key.keyGenerator());
+      aes.divideBytesOn128bits("dsadas".getBytes());
+
 
         FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("hello-view.fxml"));
         Scene scene = new Scene(fxmlLoader.load());
