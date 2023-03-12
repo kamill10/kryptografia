@@ -16,6 +16,7 @@ public class HelloApplication extends Application {
         byte [] klucz =key.keyGenerator();
       AES aes = new AES(klucz);
       byte [] arr = "dsadasdsa".getBytes();
+      byte[] zakodowane = aes.divideBytesOn128bitsAndEncode(arr);
       byte[] tab = aes.divideOnBlocksAndDecode(aes.divideBytesOn128bitsAndEncode(arr));
         System.out.println(arr[1]);
         System.out.println(tab[1]);

@@ -92,12 +92,12 @@ public class AES {
     }
 
     private byte[][] invShiftRows(byte[][] bytes) {
-        byte[] temp = new byte[4];
-        for (int i = 1; i < 4; i++) {
-            for (int j = 0; j < 4; j++) {
-                temp[j] = bytes[i][(i - j) % 4];
-                bytes[i][j] = temp[j];
+        for(int i=1; i<4; i++) {
+            byte temp = bytes[i][3];
+            for(int j=3; j>0; j--) {
+                bytes[i][j] = bytes[i][j-1];
             }
+            bytes[i][0] = temp;
         }
         return bytes;
     }
@@ -148,7 +148,7 @@ public class AES {
     }
     private byte[][] addRoundKey(byte[][] state, byte[][] w, int round)
     {
-        byte[][] tmp = new byte[4][4];
+        byte[][] tmp = new byte[state.length][state[0].length];
         for (int c = 0; c < 4; c++)
         {
             for (int l = 0; l < 4; l++)
@@ -160,7 +160,7 @@ public class AES {
 
     private byte[][] generateKey(byte[] key)
     {
-        byte[][] temp = new byte[4 ][4];
+        byte[][] temp = new byte[4 * (10+1)][4];
         int i = 0;
         int j =0;
         while (i < 4)
