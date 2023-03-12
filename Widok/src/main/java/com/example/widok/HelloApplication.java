@@ -8,15 +8,17 @@ import org.example.krypto.AES;
 import org.example.krypto.Key;
 
 import java.io.IOException;
-import java.security.SecureRandom;
-import java.util.Arrays;
 
 public class HelloApplication extends Application {
     @Override
     public void start(Stage stage) throws IOException {
         Key key = new Key();
-      AES aes = new AES(key.keyGenerator());
-      aes.divideBytesOn128bits("dsadas".getBytes());
+        byte [] klucz =key.keyGenerator();
+      AES aes = new AES(klucz);
+      byte [] arr = "dsadasdsa".getBytes();
+      byte[] tab = aes.divideOnBlocksAndDecode(aes.divideBytesOn128bitsAndEncode(arr));
+        System.out.println(arr[1]);
+        System.out.println(tab[1]);
 
 
         FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("hello-view.fxml"));

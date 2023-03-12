@@ -146,16 +146,16 @@ public class AES {
 
         return result;
     }
-        private byte[][] addRoundKey(byte[][] state, byte[][] w, int round)
+    private byte[][] addRoundKey(byte[][] state, byte[][] w, int round)
+    {
+        byte[][] tmp = new byte[4][4];
+        for (int c = 0; c < 4; c++)
         {
-            byte[][] tmp = new byte[4][4];
-            for (int c = 0; c < 4; c++)
-            {
-                for (int l = 0; l < 4; l++)
-                    tmp[l][c] = (byte) (state[l][c] ^ w[round * 4 + c][l]);
-            }
-            return tmp;
+            for (int l = 0; l < 4; l++)
+                tmp[l][c] = (byte) (state[l][c] ^ w[round * 4 + c][l]);
         }
+        return tmp;
+    }
 
 
     private byte[][] generateKey(byte[] key)
@@ -197,7 +197,7 @@ public class AES {
         return tmp;
     }
 
-    public byte[] divideBytesOn128bits(byte[]message) {
+    public byte[] divideBytesOn128bitsAndEncode(byte[]message) {
         byte[]blocks = new byte[16];
         //Create array with bites of message,but size=len is multiple 16
         int len;
@@ -224,7 +224,7 @@ public class AES {
                 i++;
             }
             i--;
-                encrypt(blocks);
+            encrypt(blocks);
             System.arraycopy(blocks, 0, encrypted, i-15, 16);
         }
         return encrypted;
@@ -252,34 +252,34 @@ public class AES {
             tmp[i] = state[i / 4][i%4];
         return tmp;
     }
- public byte [] divideOnBlocksAndDecode(byte[]encrypted_text) {
-     byte[]blocks = new byte[16];
-     //Create array with bites of message,but size=len is multiple 16
+    public byte [] divideOnBlocksAndDecode(byte[]encrypted_text) {
+        byte[]blocks = new byte[16];
+        //Create array with bites of message,but size=len is multiple 16
 
-     //Add 0 to array if you need
-     //Send block to encrypt function
-     byte []encrypted = new byte [encrypted_text.length];
-     for(int i =0; i < encrypted_text.length ; i++) {
-         for(int j =0; j < 16; j++) {
-             blocks[j] = encrypted_text[i];
-             i++;
-         }
-         i--;
-         decrypt(blocks);
-         System.arraycopy(blocks, 0, encrypted, i-15, 16);
-     }
+        //Add 0 to array if you need
+        //Send block to encrypt function
+        byte []encrypted = new byte [encrypted_text.length];
+        for(int i =0; i < encrypted_text.length ; i++) {
+            for(int j =0; j < 16; j++) {
+                blocks[j] = encrypted_text[i];
+                i++;
+            }
+            i--;
+            decrypt(blocks);
+            System.arraycopy(blocks, 0, encrypted, i-15, 16);
+        }
 
-     int cnt = 0;
-     for (int i = 1; i < encrypted_text.length; i ++) {
-         if (encrypted_text[i] == 0) {
-             cnt += 1;
-         } else {
-             break;
-         }
-     }
-     byte[] result = new byte[encrypted_text.length - cnt];
-     System.arraycopy(encrypted_text, 0, result, 0, encrypted_text.length - cnt);
-     return encrypted;
- }
+        int var = 0;
+        for (int i = 1; i < encrypted_text.length; i ++) {
+            if (encrypted_text[i] == 0) {
+                var += 1;
+            } else {
+                break;
+            }
+        }
+        byte[] result = new byte[encrypted_text.length - var];
+        System.arraycopy(encrypted_text, 0, result, 0, encrypted_text.length - var);
+        return encrypted;
+    }
 
 }
