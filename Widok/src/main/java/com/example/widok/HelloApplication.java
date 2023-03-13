@@ -20,17 +20,22 @@ public class HelloApplication extends Application {
         Key key = new Key();
         byte [] klucz =key.keyGenerator();
         AES aes = new AES(klucz);
-        byte [] arr = "dsgbhjkjhaaaa".getBytes();
+        byte [] arr = "a".getBytes();
+        System.out.println("tablica bajtow przed zakodowaniem");
         String str = new String(arr, StandardCharsets.UTF_8);
         System.out.println(str);
+        System.out.println(arr[0]);
         byte[] zakodowane = aes.divideBytesOn128bitsAndEncode(arr);
         String kod = new String(zakodowane, StandardCharsets.UTF_8);
         System.out.println("Zakodowana czesc");
         System.out.println(kod);
+        System.out.println(zakodowane[0]);
+        System.out.println(zakodowane[1]);
+        System.out.println(zakodowane[15]);
         byte[] tab = aes.decode(zakodowane);
-        System.out.println("odkodowana czesc");
-        String str2 = new String(tab);
-        System.out.println(str2);
+
+
+
 
         FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("hello-view.fxml"));
         Scene scene = new Scene(fxmlLoader.load());
