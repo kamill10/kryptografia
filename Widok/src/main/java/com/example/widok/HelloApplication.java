@@ -18,6 +18,7 @@ public class HelloApplication extends Application {
 
         Key key = new Key();
         byte [] klucz =key.keyGenerator();
+<<<<<<< HEAD
         AES aes = new AES(klucz);
         byte [] arr = "dsgbhjkjhaaaa".getBytes();
         String str = new String(arr);
@@ -26,6 +27,14 @@ public class HelloApplication extends Application {
         byte[] tab = aes.decode(zakodowane);
         String str2 = new String(tab);
         System.out.println(str2);
+=======
+      AES aes = new AES(klucz);
+      byte [] arr = "dsadasdsa".getBytes();
+      byte[] zakodowane = aes.divideBytesOn128bitsAndEncode(arr);
+      byte[] tab = aes.divideOnBlocksAndDecode(aes.divideBytesOn128bitsAndEncode(arr));
+        System.out.println(arr[1]);
+        System.out.println(tab[1]);
+>>>>>>> parent of 379a632 (dypa)
 
 
         FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("hello-view.fxml"));
