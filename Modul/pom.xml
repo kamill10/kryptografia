@@ -18,6 +18,11 @@
             <artifactId>scalajs-java-securerandom_sjs1_2.11</artifactId>
             <version>1.0.0</version>
         </dependency>
+        <dependency>
+            <groupId>bouncycastle</groupId>
+            <artifactId>bcprov-jdk15</artifactId>
+            <version>140</version>
+        </dependency>
     </dependencies>
     <build>
         <plugins>

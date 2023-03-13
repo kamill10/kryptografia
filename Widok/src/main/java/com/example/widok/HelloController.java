@@ -15,14 +15,22 @@ public class HelloController {
     public TextArea tekst_zaszyfrowany;
     public TextArea tekst_jawny;
     Key generator = new Key();
+    public String converter(byte [] bytes){
+        StringBuilder sb = new StringBuilder();
+        for (byte b : bytes) {
+            sb.append(String.format("%02X ", b));
+        }
+        return sb.toString();
+    }
 
     public String getKey() {
         return key.getText();
     }
 
     public void setKey() {
-        String convert = Arrays.toString(generator.keyGenerator());
-        key.setText(convert);
+//        String convert = Arrays.toString(generator.keyGenerator());
+//        key.setText(convert);
+        key.setText(converter(generator.keyGenerator()));
     }
 
     public String getTekst_zaszyfrowany() {
@@ -34,10 +42,11 @@ public class HelloController {
     }
     public void setEncrypt() {
         AES aes = new AES(getKey().getBytes());
-        tekst_zaszyfrowany.setText(Arrays.toString(aes.divideBytesOn128bitsAndEncode(getTekst_jawny().getBytes())));
+//        tekst_zaszyfrowany.setText(Arrays.toString(aes.divideBytesOn128bitsAndEncode(getTekst_jawny().getBytes())));
+        tekst_zaszyfrowany.setText(converter(aes.divideBytesOn128bitsAndEncode(getTekst_jawny().getBytes())));
     }
     public void setDecrypt() {
         AES aes = new AES(getKey().getBytes());
-        tekst_jawny.setText(Arrays.toString(aes.decode(getTekst_zaszyfrowany().getBytes())));
+        tekst_jawny.setText(new String(aes.decode(getTekst_zaszyfrowany().getBytes())));
     }
 }
