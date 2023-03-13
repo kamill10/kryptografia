@@ -20,10 +20,6 @@ public class HelloController {
         return key.getText();
     }
 
-    public void setKey(TextField key) {
-        this.key = key;
-    }
-
     public void setKey() {
         String convert = Arrays.toString(generator.keyGenerator());
         key.setText(convert);
@@ -42,6 +38,6 @@ public class HelloController {
     }
     public void setDecrypt() {
         AES aes = new AES(getKey().getBytes());
-        tekst_jawny.setText(Arrays.toString(aes.decode(tekst_zaszyfrowany.getText().getBytes())));
+        tekst_jawny.setText(Arrays.toString(aes.decode(getTekst_zaszyfrowany().getBytes())));
     }
 }
