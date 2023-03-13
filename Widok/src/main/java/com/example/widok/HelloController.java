@@ -15,14 +15,22 @@ public class HelloController {
     public TextArea tekst_zaszyfrowany;
     public TextArea tekst_jawny;
     Key generator = new Key();
+    StringBuilder sb = new StringBuilder();
+    public String converter(byte [] bytes){
+        for (byte b : bytes) {
+            sb.append(String.format("%02X ", b));
+        }
+        return sb.toString();
+    }
 
     public String getKey() {
         return key.getText();
     }
 
     public void setKey() {
-        String convert = Arrays.toString(generator.keyGenerator());
-        key.setText(convert);
+//        String convert = Arrays.toString(generator.keyGenerator());
+//        key.setText(convert);
+      key.setText(converter(generator.keyGenerator()));
     }
 
     public String getTekst_zaszyfrowany() {
