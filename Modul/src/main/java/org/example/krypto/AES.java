@@ -62,75 +62,88 @@ public class AES {
     }
 
     private byte[][] subBytes(byte[][] bytes) {
-        byte[][] result = new byte[4][4];
-        for (int i = 0; i < 4; i++) {
-            for (int j = 0; j < 4; j++) {
-                int element = bytes[i][j] & 0xff;
-                result[i][j] = (byte) sbox[element];
-            }
-        }
-        return result;
+        byte[][] temp = new byte[bytes.length][bytes[0].length];
+        for (int row = 0; row < 4; row++)
+            for (int col = 0; col < 4; col++)
+                temp[row][col] = (byte) (sbox[(bytes[row][col] & 0xff)]);
+        return temp;
     }
 
-    private byte[][] inverseSubBytes(byte [][]bytes ) {
-        byte[][] result = new byte[4][4];
-        for (int i = 0; i < 4; i++) {
-            for (int j = 0; j < 4; j++) {
-                int element = bytes[i][j] & 0xff;
-                result[i][j] = (byte) inv_sbox[element];
-            }
-        }
-        return result;
+    private byte[][] inverseSubBytes(byte [][]state ) {
+        for (int row = 0; row < 4; row++)
+            for (int col = 0; col < 4; col++)
+                state[row][col] = (byte)(inv_sbox[(state[row][col] & 0xff)]);
+        return state;
     }
 
-    private byte[][] shiftRows(byte[][] bytes) {
-        byte[] temp = new byte[4];
-        for (int i = 1; i < 4; i++) {
-            for (int j = 0; j < 4; j++) {
-                temp[j] = bytes[i][(i + j) % 4];
-                bytes[i][j] = temp[j];
-            }
+    private byte[][] shiftRows(byte[][] state) {
+        byte[] t = new byte[4];
+        for (int r = 1; r < 4; r++)
+        {
+            for (int c = 0; c < 4; c++)
+                t[c] = state[r][(c + r) % 4];
+            for (int c = 0; c < 4; c++)
+                state[r][c] = t[c];
         }
-        return bytes;
+        return state;
     }
 
-    private byte[][] invShiftRows(byte[][] bytes) {
-        for(int i=1; i<4; i++) {
-            byte temp = bytes[i][3];
-            for(int j=3; j>0; j--) {
-                bytes[i][j] = bytes[i][j-1];
-            }
-            bytes[i][0] = temp;
+    private byte[][] invShiftRows(byte[][] state) {
+        byte[] t = new byte[4];
+        for (int r = 1; r < 4; r++)
+        {
+            for (int c = 0; c < 4; c++)
+                t[(c + r)%4] = state[r][c];
+            for (int c = 0; c < 4; c++)
+                state[r][c] = t[c];
         }
-        return bytes;
+        return state;
     }
 
 
     private byte[][] mixColumns(byte[][] s)  {
-        byte temp0, temp1, temp2, temp3;
-
-        for (int c = 0; c < 4; c++) {
-            temp0 = (byte) (multiply(2, s[0][c]) ^ multiply(3, s[1][c]) ^ s[2][c] ^ s[3][c]);
-            temp1 = (byte) (s[0][c] ^ multiply(2, s[1][c]) ^ multiply(3, s[2][c]) ^ s[3][c]);
-            temp2 = (byte) (s[0][c] ^ s[1][c] ^ multiply(2, s[2][c]) ^ multiply(3, s[3][c]));
-            temp3 = (byte) (multiply(3, s[0][c]) ^ s[1][c] ^ s[2][c] ^ multiply(2, s[3][c]));
-            s[0][c] = temp0;
-            s[1][c] = temp1;
-            s[2][c] = temp2;
-            s[3][c] = temp3;
+        int[] sp = new int[4];
+        byte b02 = (byte)0x02, b03 = (byte)0x03;
+        for (int c = 0; c < 4; c++)
+        {
+            sp[0] = fMul(b02, s[0][c]) ^ fMul(b03, s[1][c]) ^ s[2][c]  ^ s[3][c];
+            sp[1] = s[0][c]  ^ fMul(b02, s[1][c]) ^ fMul(b03, s[2][c]) ^ s[3][c];
+            sp[2] = s[0][c]  ^ s[1][c]  ^ fMul(b02, s[2][c]) ^ fMul(b03, s[3][c]);
+            sp[3] = fMul(b03, s[0][c]) ^ s[1][c]  ^ s[2][c]  ^ fMul(b02, s[3][c]);
+            for (int i = 0; i < 4; i++) s[i][c] = (byte)(sp[i]);
         }
         return s;
     }
 
-    private byte[][] invMixColumns(byte[][] s)  {
-        byte[][] result = new byte[4][4];
-        for (int col = 0; col < 4; col++) {
-            result[0][col] = (byte) (multiply(14, s[0][col]) ^ multiply(11, s[1][col]) ^ multiply(13, s[2][col]) ^ multiply(9, s[3][col]));
-            result[1][col] = (byte) (multiply(9, s[0][col]) ^ multiply(14, s[1][col]) ^ multiply(11, s[2][col]) ^ multiply(13, s[3][col]));
-            result[2][col] = (byte) (multiply(13, s[0][col]) ^ multiply(9, s[1][col]) ^ multiply(14, s[2][col]) ^ multiply(11, s[3][col]));
-            result[3][col] = (byte) (multiply(11, s[0][col]) ^ multiply(13, s[1][col]) ^ multiply(9, s[2][col]) ^ multiply(14, s[3][col]));
+    public  byte fMul(byte a, byte b)
+    {
+        byte aa = a, bb = b, r = 0, t;
+        while (aa != 0)
+        {
+            if ((aa & 1) != 0)
+                r = (byte) (r ^ bb);
+            t = (byte) (bb & 0x20);
+            bb = (byte) (bb << 1);
+            if (t != 0)
+                bb = (byte) (bb ^ 0x1b);
+            aa = (byte) ((aa & 0xff) >> 1);
         }
-        return result;
+        return r;
+    }
+
+
+    private byte[][] invMixColumns(byte[][] s)  {
+        int[] sp = new int[4];
+        byte b02 = (byte)0x0e, b03 = (byte)0x0b, b04 = (byte)0x0d, b05 = (byte)0x09;
+        for (int c = 0; c < 4; c++)
+        {
+            sp[0] = fMul(b02, s[0][c]) ^ fMul(b03, s[1][c]) ^ fMul(b04,s[2][c])  ^ fMul(b05,s[3][c]);
+            sp[1] = fMul(b05, s[0][c]) ^ fMul(b02, s[1][c]) ^ fMul(b03,s[2][c])  ^ fMul(b04,s[3][c]);
+            sp[2] = fMul(b04, s[0][c]) ^ fMul(b05, s[1][c]) ^ fMul(b02,s[2][c])  ^ fMul(b03,s[3][c]);
+            sp[3] = fMul(b03, s[0][c]) ^ fMul(b04, s[1][c]) ^ fMul(b05,s[2][c])  ^ fMul(b02,s[3][c]);
+            for (int i = 0; i < 4; i++) s[i][c] = (byte)(sp[i]);
+        }
+        return s;
     }
 
     public static byte multiply(int a, byte b){
@@ -186,7 +199,7 @@ public class AES {
             state[i / 4][i % 4] = arr_bytes[i];
         mainKey = generateKey(originalKey);
         state=addRoundKey(state,mainKey,0);
-        for (int round = 0; round < 10; round++) {
+        for (int round = 1; round <= 9; round++) {
             state = subBytes(state);
             state = shiftRows(state);
             state = mixColumns(state);
@@ -201,94 +214,72 @@ public class AES {
     }
 
     public byte[] divideBytesOn128bitsAndEncode(byte[]message) {
-        byte[]blocks = new byte[16];
-        //Create array with bites of message,but size=len is multiple 16
+        int Nk = 4;
+        int Nr = Nk + 6;
         int len;
-        if(message.length/16 == 0) {
-            len = 16;
+        int pom=message.length/16;
+        if (pom==0) len=16;
+        else if ((message.length % 16) != 0)
+            len=(pom+1)*16;
+        else len=pom*16;
+        byte[] result = new byte[len];
+        byte[] temp = new byte[len];
+        byte[] blok = new byte[16];
+        for (int i = 0; i < len;i++)
+        { if(i<message.length) temp[i]=message[i];
+        else temp[i]=0;
         }
-        else if (message.length%16 != 0) {
-            len = ((message.length/16)+1)*16;
+        for (int k = 0; k < temp.length;)
+        {
+            for (int j=0;j<16;j++) blok[j]=temp[k++];
+            blok = encrypt(blok);
+            System.arraycopy(blok, 0, result,k-16, blok.length);
+
         }
-        else {
-            len = message.length;
-        }
-        byte [] multipleSizeOfBlockArray = new byte[len];
-        //Add 0 to array if you need
-        System.arraycopy(message, 0, multipleSizeOfBlockArray, 0, message.length);
-        for(int j = message.length; j < len; j++) {
-            multipleSizeOfBlockArray[j] = 0;
-        }
-        //Send block to encrypt function
-        byte []encrypted = new byte [len];
-        for(int i =0; i < multipleSizeOfBlockArray.length ; i++) {
-            for(int j =0; j < 16; j++) {
-                blocks[j] = multipleSizeOfBlockArray[i];
-                i++;
-            }
-            i--;
-            blocks=encrypt(blocks);
-            System.arraycopy(blocks, 0, encrypted, i-15, 16);
-        }
-        String str = new String(encrypted, StandardCharsets.UTF_8);
-        return encrypted;
+        return result;
     }
 
-    private byte  []decrypt(byte[] arr_bytes) {
+    private byte  []decrypt(byte[] in) {
 
-        byte[] tmp = new byte[arr_bytes.length];
-        byte[][] state = new byte[4][4];
-        for (int i = 0; i < arr_bytes.length; i++)
-            //save arr-bytes to two diamension state arr
-            state[i / 4][i % 4] = arr_bytes[i];
-        mainKey = generateKey(originalKey);
-        state=addRoundKey(state,mainKey,0);
-        for (int round = 9; round >=1; round--) {
+        byte[] tmp = new byte[in.length];
+        byte[][] state = new byte[4][4]; //4 Nb
+        for (int i = 0; i < in.length; i++)
+            state[i/4][i % 4] = in[i];
+        state = addRoundKey(state, mainKey, 10);
+        for (int round = 10-1; round >=1; round--)
+        {
             state = inverseSubBytes(state);
             state = invShiftRows(state);
-            state = addRoundKey(state, mainKey,round);
+            state = addRoundKey(state, mainKey, round);
             state = invMixColumns(state);
         }
         state = inverseSubBytes(state);
         state = invShiftRows(state);
-        state = addRoundKey(state, mainKey,10);
+        state = addRoundKey(state, mainKey, 0);
         for (int i = 0; i < tmp.length; i++)
             tmp[i] = state[i / 4][i%4];
         return tmp;
     }
-    public byte []decode(byte[]encrypted_text) {
-        byte[]blocks = new byte[16];
-        byte []encrypted = new byte [encrypted_text.length];
-        for(int i =0; i < encrypted_text.length ; i++) {
-            for(int j =0; j < 16; j++) {
-                blocks[j] = encrypted_text[i];
-                i++;
-            }
-            i--;
-            blocks=decrypt(blocks);
-            System.arraycopy(blocks, 0, encrypted, i-15, 16);
+    public byte []decode(byte[]encrypted) {
+        byte[] tmpResult = new byte[encrypted.length];
+        byte[] blok = new byte[16];
+        int Nk = 16/4;
+       int  Nr = Nk + 6;
+        for (int i = 0; i < encrypted.length;)
+        {
+            for (int j=0;j<16;j++) blok[j]=encrypted[i++];
+            blok = decrypt(blok);
+            System.arraycopy(blok, 0, tmpResult,i-16, blok.length);
         }
-        System.out.println("jestem przed usuwaniem zer");
-        String kod = new String(encrypted, StandardCharsets.UTF_8);
-        System.out.println(encrypted[0]);
-        System.out.println(encrypted[1]);
-        System.out.println(kod);
-        int var = 0;
-        for (int i = 15; i>0;i--) {
-            if (encrypted[i] == 0) {
-                System.out.println("jesem tu po raz (usuwam zera)"+i);
-                var += 1;
-            } else {
-                break;
-            }
+        int cnt = 0;
+        for (int i = 1; i < 17; i += 2)
+        {
+            if (tmpResult[tmpResult.length - i] == 0 && tmpResult[tmpResult.length - i - 1] == 0)
+                cnt += 2;
+            else  break;
         }
-        byte[] result = new byte[encrypted.length - var];
-        System.arraycopy(encrypted, 0, result, 0, encrypted.length - var);
-        System.out.println("jestem w metodzie dekodujacej po usuwaniu zer");
-        String kod2 = new String(result, StandardCharsets.UTF_8);
-        System.out.println(kod2);
-        System.out.println(result[0]);
-        System.out.println(result[1]);
+        byte[] result = new byte[tmpResult.length - cnt];
+        System.arraycopy(tmpResult, 0, result, 0, tmpResult.length - cnt);
         return result;
     }
 
