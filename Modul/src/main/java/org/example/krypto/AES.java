@@ -1,5 +1,6 @@
 package org.example.krypto;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 
 public class AES {
@@ -226,9 +227,10 @@ public class AES {
                 i++;
             }
             i--;
-            encrypt(blocks);
+            blocks=encrypt(blocks);
             System.arraycopy(blocks, 0, encrypted, i-15, 16);
         }
+        String str = new String(encrypted, StandardCharsets.UTF_8);
         return encrypted;
     }
 
@@ -263,21 +265,30 @@ public class AES {
                 i++;
             }
             i--;
-            decrypt(blocks);
+            blocks=decrypt(blocks);
             System.arraycopy(blocks, 0, encrypted, i-15, 16);
         }
-        System.out.println(Arrays.toString(encrypted));
+        System.out.println("jestem przed usuwaniem zer");
+        String kod = new String(encrypted, StandardCharsets.UTF_8);
+        System.out.println(encrypted[0]);
+        System.out.println(encrypted[1]);
+        System.out.println(kod);
         int var = 0;
         for (int i = 15; i>0;i--) {
             if (encrypted[i] == 0) {
+                System.out.println("jesem tu po raz (usuwam zera)"+i);
                 var += 1;
             } else {
                 break;
             }
         }
-        byte[] result = new byte[encrypted_text.length - var];
-        System.arraycopy(encrypted_text, 0, result, 0, encrypted_text.length - var);
-        System.out.println(Arrays.toString(result));
+        byte[] result = new byte[encrypted.length - var];
+        System.arraycopy(encrypted, 0, result, 0, encrypted.length - var);
+        System.out.println("jestem w metodzie dekodujacej po usuwaniu zer");
+        String kod2 = new String(result, StandardCharsets.UTF_8);
+        System.out.println(kod2);
+        System.out.println(result[0]);
+        System.out.println(result[1]);
         return result;
     }
 
