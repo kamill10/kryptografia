@@ -228,6 +228,7 @@ public class AES {
             i--;
             encrypt(blocks);
             System.arraycopy(blocks, 0, encrypted, i-15, 16);
+
         }
         return encrypted;
     }
@@ -266,7 +267,6 @@ public class AES {
             decrypt(blocks);
             System.arraycopy(blocks, 0, encrypted, i-15, 16);
         }
-        System.out.println(Arrays.toString(encrypted));
         int var = 0;
         for (int i = 15; i>0;i--) {
             if (encrypted[i] == 0) {
@@ -275,9 +275,9 @@ public class AES {
                 break;
             }
         }
+
         byte[] result = new byte[encrypted_text.length - var];
-        System.arraycopy(encrypted_text, 0, result, 0, encrypted_text.length - var);
-        System.out.println(Arrays.toString(result));
+
         return result;
     }
 
