@@ -1,23 +1,23 @@
 package com.example.widok;
 
 import javafx.scene.control.Button;
-import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.stage.FileChooser;
 import org.example.krypto.AES;
 import org.example.krypto.Key;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 
 
 public class HelloController {
     public Button keyGenerator;
     public TextField key;
-    public TextArea tekst_zaszyfrowany;
-    public TextArea tekst_jawny;
+    public TextField text;
+    public TextField tekst_zaszyfrowany;
+    public TextField tekst_jawny;
+    public Button jawny;
+    public Button szyfr;
+    public Button klucz;
     Key generator = new Key();
     private byte [] arr;
 
@@ -28,7 +28,9 @@ public class HelloController {
         }
         return sb.toString();
     }
-
+    public void setText(TextField text) {
+        this.text = text;
+    }
     public String getKey() {
         return key.getText();
     }
@@ -53,38 +55,70 @@ public class HelloController {
     }
     public void zapis_do_pliku() {
         FileChooser fileChooser = new FileChooser();
-
-        // Set the title of the file chooser dialog
-        fileChooser.setTitle("Save File");
-
-        // Set the initial directory of the file chooser dialog
+        fileChooser.setTitle("Zapis do pliku");
         fileChooser.setInitialDirectory(new File(System.getProperty("user.home")));
-
-        // Set the file extension filters for the file chooser dialog
         fileChooser.getExtensionFilters().addAll(
-                new FileChooser.ExtensionFilter("Text Files", "*.txt"),
-                new FileChooser.ExtensionFilter("All Files", "*.*"));
-
-        // Show the save dialog to the user
+                new FileChooser.ExtensionFilter("Text Files", "*.*"));
         File fileToSave = fileChooser.showSaveDialog(Scene.getStage());
-
         if (fileToSave != null) {
             try {
-                // Create a BufferedWriter object to write data to the file
                 BufferedWriter writer = new BufferedWriter(new FileWriter(fileToSave));
-
-                // Write some data to the file
-                writer.write(tekst_zaszyfrowany.getText());
-
-                // Close the writer
+                writer.write(text.getText());
                 writer.close();
-
-                System.out.println("File saved successfully!");
+                System.out.println("Zapisano pomyślnie!");
             } catch (IOException e) {
                 e.printStackTrace();
             }
         } else {
-            System.out.println("Save command cancelled by user.");
+            System.out.println("Zapis został przerwany");
         }
+    }
+    public StringBuilder odczyt_z_pliku() {
+        StringBuilder fileContents = new StringBuilder();
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Odczyt z pliku");
+        fileChooser.setInitialDirectory(new File(System.getProperty("user.home")));
+        fileChooser.getExtensionFilters().addAll(
+                new FileChooser.ExtensionFilter("Text Files", "*.*"));
+        File loadFile = fileChooser.showOpenDialog(Scene.getStage());
+        if (loadFile != null) {
+            try {
+                BufferedReader reader = new BufferedReader(new FileReader(loadFile));
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    fileContents.append(line);
+                    fileContents.append(System.lineSeparator());
+                }
+                reader.close();
+
+                System.out.println("Odczytano pomyślnie!");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else {
+            System.out.println("Odczyt został przerwany");
+        }
+        return fileContents;
+    }
+    public void saveKey() {
+        setText(key);
+        zapis_do_pliku();
+    }
+    public void saveTextJ() {
+        setText(tekst_jawny);
+        zapis_do_pliku();
+    }
+    public void saveTextZ() {
+        setText(tekst_zaszyfrowany);
+        zapis_do_pliku();
+    }
+    public void loadKey() {
+        key.setText(odczyt_z_pliku().toString());
+    }
+    public void loadTextJ() {
+        tekst_jawny.setText(odczyt_z_pliku().toString());
+    }
+    public void loadTextZ() {
+        tekst_zaszyfrowany.setText(odczyt_z_pliku().toString());
     }
 }

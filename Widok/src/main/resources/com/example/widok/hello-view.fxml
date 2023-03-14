@@ -3,8 +3,10 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.effect.Blend?>
+<?import javafx.scene.effect.Bloom?>
+<?import javafx.scene.effect.InnerShadow?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.TilePane?>
 <?import javafx.scene.layout.VBox?>
@@ -31,83 +33,135 @@
             <font>
                <Font name="Txt" size="14.0" />
             </font>
+            <effect>
+               <Bloom>
+                  <input>
+                     <Blend />
+                  </input>
+               </Bloom>
+            </effect>
          </Label>
-         <Label alignment="CENTER" contentDisplay="CENTER" layoutX="87.0" layoutY="40.0" prefHeight="43.0" prefWidth="792.0" text="Długość klucza to: 128 bitów">
+         <Label alignment="CENTER" contentDisplay="CENTER" layoutX="87.0" layoutY="40.0" prefHeight="43.0" prefWidth="716.0" text="Długość klucza to: 128 bitów">
             <font>
                <Font name="Txt" size="14.0" />
             </font>
+            <effect>
+               <Blend />
+            </effect>
          </Label>
-         <Button fx:id="keyGenerator" layoutX="87.0" layoutY="83.0" mnemonicParsing="false" onAction="#setKey" prefHeight="28.0" prefWidth="792.0" text="Wygeneruj klucz">
+         <Button fx:id="keyGenerator" layoutX="34.0" layoutY="83.0" mnemonicParsing="false" onAction="#setKey" prefHeight="28.0" prefWidth="792.0" text="Wygeneruj klucz">
             <font>
                <Font name="Txt" size="14.0" />
             </font>
+            <effect>
+               <InnerShadow />
+            </effect>
          </Button>
          <Label alignment="CENTER" contentDisplay="CENTER" layoutX="6.0" layoutY="124.0" prefHeight="43.0" prefWidth="878.0" text="SZYFROWANIE/DESZYFROWANIE">
             <font>
                <Font name="Txt" size="14.0" />
             </font>
+            <effect>
+               <Blend />
+            </effect>
          </Label>
          <Label layoutY="172.0" prefHeight="35.0" prefWidth="215.0" text="Plik z tekstem jawnym:">
             <font>
                <Font name="Txt" size="14.0" />
             </font>
+            <effect>
+               <Blend />
+            </effect>
          </Label>
          <Label layoutY="207.0" prefHeight="35.0" prefWidth="215.0" text="Plik z szyfrogramem:">
             <font>
                <Font name="Txt" size="14.0" />
             </font>
+            <effect>
+               <Blend />
+            </effect>
          </Label>
-         <Button onAction="#zapis_do_pliku" layoutX="215.0" layoutY="177.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="266.0" text="Zapisz">
+         <Button fx:id="jawny" layoutX="215.0" layoutY="177.0" mnemonicParsing="false" onAction="#saveTextJ" prefHeight="25.0" prefWidth="266.0" text="Zapisz">
             <font>
                <Font name="Txt" size="14.0" />
             </font>
+            <effect>
+               <InnerShadow />
+            </effect>
          </Button>
-         <Button onAction="#zapis_do_pliku"  layoutX="215.0" layoutY="211.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="266.0" text="Zapisz">
+         <Button fx:id="szyfr" layoutX="215.0" layoutY="211.0" mnemonicParsing="false" onAction="#saveTextZ" prefHeight="27.0" prefWidth="266.0" text="Zapisz">
             <font>
                <Font name="Txt" size="14.0" />
             </font>
+            <effect>
+               <InnerShadow />
+            </effect>
          </Button>
-         <Button layoutX="534.0" layoutY="211.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="266.0" text="Załaduj">
+         <Button layoutX="534.0" layoutY="211.0" mnemonicParsing="false" onAction="#loadTextZ" prefHeight="27.0" prefWidth="266.0" text="Załaduj">
             <font>
                <Font name="Txt" size="14.0" />
             </font>
+            <effect>
+               <InnerShadow />
+            </effect>
          </Button>
-         <Button layoutX="534.0" layoutY="176.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="266.0" text="Załaduj">
+         <Button layoutX="534.0" layoutY="176.0" mnemonicParsing="false" onAction="#loadTextJ" prefHeight="27.0" prefWidth="266.0" text="Załaduj">
             <font>
                <Font name="Txt" size="14.0" />
             </font>
+            <effect>
+               <InnerShadow />
+            </effect>
          </Button>
          <Label layoutX="15.0" layoutY="256.0" prefHeight="35.0" prefWidth="186.0" text="TEKST JAWNY:">
             <font>
                <Font name="Txt" size="14.0" />
             </font>
+            <effect>
+               <Blend />
+            </effect>
          </Label>
          <Label layoutX="529.0" layoutY="256.0" prefHeight="35.0" prefWidth="186.0" text="SZYFROGRAM:">
             <font>
                <Font name="Txt" size="14.0" />
             </font>
+            <effect>
+               <Blend />
+            </effect>
          </Label>
-         <TextArea fx:id="tekst_jawny" accessibleRole="TEXT_FIELD" layoutX="14.0" layoutY="292.0" prefHeight="276.0" prefWidth="320.0" />
-         <TextArea fx:id="tekst_zaszyfrowany" accessibleRole="TEXT_FIELD" layoutX="529.0" layoutY="292.0" prefHeight="276.0" prefWidth="320.0" />
+         <TextField fx:id="tekst_jawny" alignment="TOP_LEFT" layoutX="14.0" layoutY="292.0" prefHeight="276.0" prefWidth="320.0" />
+         <TextField fx:id="tekst_zaszyfrowany" alignment="TOP_LEFT" layoutX="529.0" layoutY="292.0" prefHeight="276.0" prefWidth="320.0" />
          <Button layoutX="345.0" layoutY="346.0" mnemonicParsing="false" onAction="#setEncrypt" prefHeight="35.0" prefWidth="170.0" text="Szyfruj &gt;&gt;&gt;">
             <font>
                <Font name="Txt" size="14.0" />
             </font>
+            <effect>
+               <InnerShadow />
+            </effect>
          </Button>
          <Button layoutX="345.0" layoutY="413.0" mnemonicParsing="false" onAction="#setDecrypt" prefHeight="35.0" prefWidth="170.0" text="&lt;&lt;&lt; Deszyfruj">
             <font>
                <Font name="Txt" size="14.0" />
             </font>
+            <effect>
+               <InnerShadow />
+            </effect>
          </Button>
-         <Button layoutX="689.0" layoutY="15.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="96.0" text="Wczytaj">
+         <Button layoutX="783.0" layoutY="15.0" mnemonicParsing="false" onAction="#loadKey" prefHeight="25.0" prefWidth="96.0" text="Wczytaj">
             <font>
                <Font name="Txt" size="12.0" />
             </font>
+            <effect>
+               <InnerShadow />
+            </effect>
          </Button>
-         <Button onAction="#zapis_do_pliku" layoutX="781.0" layoutY="15.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="96.0" text="Zapisz">
+         <Button fx:id="klucz" layoutX="689.0" layoutY="15.0" mnemonicParsing="false" onAction="#saveKey" prefHeight="25.0" prefWidth="96.0" text="Zapisz">
             <font>
                <Font name="Txt" size="12.0" />
             </font>
+            <effect>
+               <InnerShadow />
+            </effect>
          </Button>
       </children>
    </Pane>
