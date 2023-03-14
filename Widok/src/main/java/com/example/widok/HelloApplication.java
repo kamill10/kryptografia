@@ -3,7 +3,6 @@ package com.example.widok;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import org.example.krypto.AES;
 import org.example.krypto.Key;
@@ -11,10 +10,15 @@ import org.example.krypto.Key;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
-import java.math.BigInteger;
 
 public class HelloApplication extends Application {
+    public String converter(byte [] bytes){
+        StringBuilder sb = new StringBuilder();
+        for (byte b : bytes) {
+            sb.append(String.format("%02X ", b));
+        }
+        return sb.toString();
+    }
     @Override
     public void start(Stage stage) throws IOException {
 
@@ -24,7 +28,7 @@ public class HelloApplication extends Application {
         }
         Key key = new Key();
         byte [] klucz =key.keyGenerator();
-        AES aes = new AES(asciiArray);
+        AES aes = new AES(converter(klucz).getBytes());
         byte [] arr = "ab".getBytes();
         System.out.println("tablica bajtow przed zakodowaniem");
         String str = new String(arr, StandardCharsets.UTF_8);

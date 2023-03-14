@@ -1,8 +1,5 @@
 package org.example.krypto;
 
-import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
-
 public class AES {
     private byte[][] mainKey;
     Key key = new Key();
@@ -245,6 +242,7 @@ public class AES {
         byte[][] state = new byte[4][4]; //4 Nb
         for (int i = 0; i < in.length; i++)
             state[i/4][i % 4] = in[i];
+        mainKey = generateKey(originalKey);
         state = addRoundKey(state, mainKey, 10);
         for (int round = 10-1; round >=1; round--)
         {
