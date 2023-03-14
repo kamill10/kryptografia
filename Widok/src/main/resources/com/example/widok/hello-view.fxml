@@ -37,7 +37,7 @@
                <Font name="Txt" size="14.0" />
             </font>
          </Label>
-         <Button fx:id="keyGenerator" layoutX="87.0" layoutY="83.0" mnemonicParsing="false" prefHeight="28.0" prefWidth="792.0" onAction="#setKey" text="Wygeneruj klucz">
+         <Button fx:id="keyGenerator" layoutX="87.0" layoutY="83.0" mnemonicParsing="false" onAction="#setKey" prefHeight="28.0" prefWidth="792.0" text="Wygeneruj klucz">
             <font>
                <Font name="Txt" size="14.0" />
             </font>
@@ -57,12 +57,12 @@
                <Font name="Txt" size="14.0" />
             </font>
          </Label>
-         <Button layoutX="215.0" layoutY="177.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="266.0" text="Zapisz">
+         <Button onAction="#zapis_do_pliku" layoutX="215.0" layoutY="177.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="266.0" text="Zapisz">
             <font>
                <Font name="Txt" size="14.0" />
             </font>
          </Button>
-         <Button layoutX="215.0" layoutY="211.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="266.0" text="Zapisz">
+         <Button onAction="#zapis_do_pliku"  layoutX="215.0" layoutY="211.0" mnemonicParsing="false" prefHeight="27.0" prefWidth="266.0" text="Zapisz">
             <font>
                <Font name="Txt" size="14.0" />
             </font>
@@ -89,14 +89,24 @@
          </Label>
          <TextArea fx:id="tekst_jawny" accessibleRole="TEXT_FIELD" layoutX="14.0" layoutY="292.0" prefHeight="276.0" prefWidth="320.0" />
          <TextArea fx:id="tekst_zaszyfrowany" accessibleRole="TEXT_FIELD" layoutX="529.0" layoutY="292.0" prefHeight="276.0" prefWidth="320.0" />
-         <Button onAction="#setEncrypt" layoutX="345.0" layoutY="346.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="170.0" text="Szyfruj &gt;&gt;&gt;">
+         <Button layoutX="345.0" layoutY="346.0" mnemonicParsing="false" onAction="#setEncrypt" prefHeight="35.0" prefWidth="170.0" text="Szyfruj &gt;&gt;&gt;">
             <font>
                <Font name="Txt" size="14.0" />
             </font>
          </Button>
-         <Button onAction="#setDecrypt" layoutX="345.0" layoutY="413.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="170.0" text="&lt;&lt;&lt; Deszyfruj">
+         <Button layoutX="345.0" layoutY="413.0" mnemonicParsing="false" onAction="#setDecrypt" prefHeight="35.0" prefWidth="170.0" text="&lt;&lt;&lt; Deszyfruj">
             <font>
                <Font name="Txt" size="14.0" />
+            </font>
+         </Button>
+         <Button layoutX="689.0" layoutY="15.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="96.0" text="Wczytaj">
+            <font>
+               <Font name="Txt" size="12.0" />
+            </font>
+         </Button>
+         <Button onAction="#zapis_do_pliku" layoutX="781.0" layoutY="15.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="96.0" text="Zapisz">
+            <font>
+               <Font name="Txt" size="12.0" />
             </font>
          </Button>
       </children>
